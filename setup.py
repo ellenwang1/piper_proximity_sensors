@@ -24,8 +24,10 @@ setup(
     },
     entry_points={
         'console_scripts': [
-		'sensor_node = proximity_sensors.sensor_node:main',
-		'watchdog_node = proximity_sensors.watchdog_node:main',
-        ],
+        'sensor_node = proximity_sensors.sensor_node:main',
+        'filter_node = proximity_sensors.filter_node:main',
+        'watchdog_node = proximity_sensors.watchdog_node:main',
+        'velocity_controller = proximity_sensors.velocity_controller:main',
+    ],
     },
 )
