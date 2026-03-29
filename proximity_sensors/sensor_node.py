@@ -1,45 +1,35 @@
-import rclpy
-from rclpy.node import Node
+import rospy
 from std_msgs.msg import Int32, Float32
 
-class SensorNode(Node):
+class SensorNode:
     def __init__(self):
-        super().__init__('sensor_node')
-        self.subscription = self.create_subscription(
-            Int32,
-            'proximity_raw',
-            self.listener_callback,
-            10)
-        self.publisher = self.create_publisher(Float32, 'proximity_filtered', 10)
+        rospy.init_node('sensor_node')
+        self.subscription = rospy.Subscriber('proximity_raw', Int32, self.listener_callback, queue_size=10)
+        self.publisher = rospy.Publisher('proximity_filtered', Float32, queue_size=10)
         self.baseline = None
         self.baseline_samples = []
         self.calibrating = True
-        self.get_logger().info('Sensor node started, calibrating baseline...')
+        rospy.loginfo('Sensor node started, calibrating baseline...')
 
     def listener_callback(self, msg):
         raw = float(msg.data)
 
-        # Collect 20 samples for baseline
         if self.calibrating:
             self.baseline_samples.append(raw)
             if len(self.baseline_samples) >= 20:
                 self.baseline = sum(self.baseline_samples) / len(self.baseline_samples)
                 self.calibrating = False
-                self.get_logger().info(f'Baseline set: {self.baseline:.1f}')
+                rospy.loginfo(f'Baseline set: {self.baseline:.1f}')
             return
 
-        # Publish how far below baseline we are (positive = object detected)
         delta = self.baseline - raw
         out = Float32()
         out.data = delta
         self.publisher.publish(out)
 
-def main(args=None):
-    rclpy.init(args=args)
+def main():
     node = SensorNode()
-    rclpy.spin(node)
-    node.destroy_node()
-    rclpy.shutdown()
+    rospy.spin()
 
 if __name__ == '__main__':
     main()

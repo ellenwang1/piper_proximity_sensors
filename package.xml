@@ -1,18 +1,28 @@
 <?xml version="1.0"?>
-<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
-<package format="3">
+<package format="2">
   <name>proximity_sensors</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Proximity sensor pipeline for Piper arm</description>
   <maintainer email="ewan0308@todo.todo">ewan0308</maintainer>
-  <license>TODO: License declaration</license>
+  <license>TODO</license>
 
-  <test_depend>ament_copyright</test_depend>
-  <test_depend>ament_flake8</test_depend>
-  <test_depend>ament_pep257</test_depend>
-  <test_depend>python3-pytest</test_depend>
-
-  <export>
-    <build_type>ament_python</build_type>
-  </export>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
 </package>
+```
+
+Also delete the `resource/` folder and `setup.cfg` — those are ament artifacts that serve no purpose in ROS1.
+
+After that your package structure should look like:
+```
+proximity_sensors/
+├── CMakeLists.txt
+├── package.xml
+└── proximity_sensors/
+    ├── __init__.py
+    ├── sensor_node.py
+    ├── filter_node.py
+    ├── watchdog_node.py
+    └── velocity_controller.py
